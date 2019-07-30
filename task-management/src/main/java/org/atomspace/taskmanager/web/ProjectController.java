@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by sergey.derevyanko on 30.07.19.
@@ -25,11 +27,15 @@ public class ProjectController {
     @PostMapping("")
     public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project,
                                                     BindingResult bindingResult){
-        if(bindingResult.hasErrors()){
-            return new ResponseEntity<String>("Invalid Project Object", HttpStatus.BAD_REQUEST);
+       if(bindingResult.hasErrors()){
+            Map<String, String> errorMap = new HashMap<>();
+            bindingResult.getFieldErrors().forEach(fieldError -> {
+                errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+            });
+            return new ResponseEntity<Map>(errorMap, HttpStatus.BAD_REQUEST);
         }
 
         Project createdProject = projectService.saveOrUpdateProject(project);
-        return new ResponseEntity<Project>(createdProject, HttpStatus.CREATED);
+        return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 }
