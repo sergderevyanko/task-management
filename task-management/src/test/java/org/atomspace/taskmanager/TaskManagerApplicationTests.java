@@ -1,4 +1,4 @@
-package org.atomspace;
+package org.atomspace.taskmanager;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
