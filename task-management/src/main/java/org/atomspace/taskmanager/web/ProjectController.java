@@ -1,6 +1,7 @@
 package org.atomspace.taskmanager.web;
 
 import org.atomspace.taskmanager.domain.Project;
+import org.atomspace.taskmanager.services.MapValidationErrorService;
 import org.atomspace.taskmanager.services.ProjectService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -12,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * Created by sergey.derevyanko on 30.07.19.
@@ -24,15 +23,15 @@ public class ProjectController {
     @Autowired
     private ProjectService projectService;
 
+    @Autowired
+    private MapValidationErrorService mapValidationErrorService;
     @PostMapping("")
     public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project,
                                                     BindingResult bindingResult){
-       if(bindingResult.hasErrors()){
-            Map<String, String> errorMap = new HashMap<>();
-            bindingResult.getFieldErrors().forEach(fieldError -> {
-                errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
-            });
-            return new ResponseEntity<Map>(errorMap, HttpStatus.BAD_REQUEST);
+
+        ResponseEntity<?> errorMap = mapValidationErrorService.mapValidation(bindingResult);
+        if(errorMap != null ){
+            return errorMap;
         }
 
         Project createdProject = projectService.saveOrUpdateProject(project);
