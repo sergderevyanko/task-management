@@ -11,10 +11,18 @@ class AddProject extends Component {
             projectIdentifier: "",
             description: "",
             startDate: "",
-            endDate: ""
+            endDate: "",
+            errors: {}
         }
         this.onChange = this.onChange.bind(this)
         this.onSubmit = this.onSubmit.bind(this)
+    }
+
+    //life cycle hooks
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.errors){
+            this.setState({ errors: nextProps.errors })
+        }
     }
 
     onChange(e) {
@@ -35,6 +43,7 @@ class AddProject extends Component {
         this.props.createProject(newProject, this.props.history);
     }
     render() {
+        const {errors} = this.state;
         return (
             <div className="project">
                 <div className="container">
@@ -50,6 +59,7 @@ class AddProject extends Component {
                                            onChange={this.onChange}
                                            placeholder="Project Name"/>
                                 </div>
+                                <p>{errors.projectName}</p>
                                 <div className="form-group">
                                     <input type="text" className="form-control form-control-sm"
                                            name="projectIdentifier"
@@ -57,6 +67,7 @@ class AddProject extends Component {
                                            onChange={this.onChange}
                                            placeholder="Unique Project ID" />
                                 </div>
+                                <p>{errors.projectIdentifier}</p>
                                 <div className="form-group">
                                     <textarea className="form-control form-control-sm"
                                               name="description"
@@ -64,6 +75,7 @@ class AddProject extends Component {
                                               onChange={this.onChange}
                                               placeholder="Project Description"></textarea>
                                 </div>
+                                <p>{errors.description}</p>
                                 <h6>Start Date</h6>
                                 <div className="form-group">
                                     <input type="date" className="form-control form-control-sm" name="startDate"
@@ -89,7 +101,11 @@ class AddProject extends Component {
 }
 
 AddProject.propTypes = {
-    createProject: PropTypes.func.isRequired
+    createProject: PropTypes.func.isRequired,
+    errors: PropTypes.object.isRequired
 }
 
-export default connect (null, {createProject}) (AddProject);
+const mapStateToProps = state => ({
+   errors: state.errors
+});
+export default connect (mapStateToProps, {createProject}) (AddProject);
