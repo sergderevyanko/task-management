@@ -11,9 +11,9 @@ if(window.navigator.userAgent.includes("Chrome")){
     store = createStore(
         rootReducer,
         initialState,
-        compose(applyMiddleware(...middleware)),
+        compose(applyMiddleware(...middleware),
         // from https://github.com/zalmoxisus/redux-devtools-extension
-        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
+        window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__())
     );
 }
 else {
