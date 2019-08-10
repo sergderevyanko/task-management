@@ -37,6 +37,15 @@ public class Project {
     public Project() {
     }
 
+    public Project(@NotBlank(message = "Project name is required") String projectName,
+                   @NotBlank(message = "Project Identifier is required")
+                   @Size(min = 2, max = 5, message = "Please use 2 to 5 characters") String projectIdentifier,
+                   @NotBlank(message = "Project description is required") String description) {
+        this.projectName = projectName;
+        this.projectIdentifier = projectIdentifier;
+        this.description = description;
+    }
+
     public Long getId() {
         return id;
     }
