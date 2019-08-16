@@ -5,6 +5,10 @@ export const createProject = (project, history) => async dispatch => {
     try {
         const res = await axios.post("http://localhost:8080/api/project", project)
         history.push("/dashboard")
+        dispatch({
+            type: GET_ERRORS,
+            payload: {}
+        })
     } catch (err) {
         dispatch({
             type: GET_ERRORS,
@@ -29,9 +33,6 @@ export const getProject = (id, history) => async dispatch => {
             payload: res.data
         });
     } catch (err) {
-        dispatch({
-            type: GET_PROJECT,
-            payload: err.response.data
-        })
+        history.push('/dashboard');
     }
 };

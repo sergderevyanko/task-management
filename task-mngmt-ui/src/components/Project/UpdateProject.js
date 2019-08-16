@@ -6,7 +6,7 @@ import {createProject, getProject} from "../../actions/projectActions";
 
 class UpdateProject extends Component {
 
-    constructor(){
+    constructor() {
         super()
 
         this.state = {
@@ -23,6 +23,9 @@ class UpdateProject extends Component {
     }
 
     componentWillReceiveProps(nextProps) {
+        if (nextProps.errors) {
+            this.setState({errors: nextProps.errors});
+        }
         const {
             id,
             projectName,
@@ -46,7 +49,7 @@ class UpdateProject extends Component {
         this.props.getProject(id, this.props.history);
     }
 
-    onChange(e){
+    onChange(e) {
         this.setState({[e.target.name]: e.target.value});
     }
 
@@ -94,13 +97,7 @@ class UpdateProject extends Component {
                                            })}
                                            name="projectIdentifier"
                                            value={this.state.projectIdentifier}
-                                           onChange={this.onChange}
                                            placeholder="Unique Project ID" disabled/>
-                                    {errors.projectIdentifier && (
-                                        <div className="invalid-feedback">
-                                            {errors.projectIdentifier}
-                                        </div>
-                                    )}
                                 </div>
                                 <div className="form-group">
                                     <textarea
@@ -145,11 +142,13 @@ class UpdateProject extends Component {
 UpdateProject.propTypes = {
     getProject: PropTypes.func.isRequired,
     createProject: PropTypes.func.isRequired,
-    project: PropTypes.object.isRequired
+    project: PropTypes.object.isRequired,
+    errors: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-    project: state.project.project
+    project: state.project.project,
+    errors: state.errors
 });
 
 export default connect(mapStateToProps, {getProject, createProject})(UpdateProject);
