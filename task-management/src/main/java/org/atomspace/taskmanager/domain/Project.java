@@ -35,6 +35,10 @@ public class Project {
     @JsonFormat( pattern = "yyyy-MM-dd HH:mm:ss")
     private Date updatedAt;
 
+    // mappedBy value should be the same as field name in Backlog
+    @OneToOne(fetch = FetchType.EAGER, cascade = CascadeType.ALL, mappedBy = "project")
+    private Backlog backlog;
+
     public Project() {
     }
 
@@ -109,6 +113,14 @@ public class Project {
 
     public void setUpdatedAt(Date updatedAt) {
         this.updatedAt = updatedAt;
+    }
+
+    public Backlog getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(Backlog backlog) {
+        this.backlog = backlog;
     }
 
     @PrePersist

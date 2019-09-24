@@ -1,7 +1,9 @@
 package org.atomspace.taskmanager.services;
 
+import org.atomspace.taskmanager.domain.Backlog;
 import org.atomspace.taskmanager.domain.Project;
 import org.atomspace.taskmanager.exceptions.ProjectIdException;
+import org.atomspace.taskmanager.repositories.BacklogRepository;
 import org.atomspace.taskmanager.repositories.ProjectRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,10 +17,22 @@ public class ProjectService {
     @Autowired
     private ProjectRepository projectRepository;
 
+    @Autowired
+    private BacklogRepository backlogRepository;
+
     public Project saveOrUpdateProject(Project project){
 
         try{
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
+            if(project.getId() == null){
+                Backlog backlog = new Backlog();
+                backlog.setProject(project);
+                project.setBacklog(backlog);
+                backlog.setProjectIdentifier(project.getProjectIdentifier());
+            }
+            else {
+                project.setBacklog(backlogRepository.findByProjectIdentifier(project.getProjectIdentifier()));
+            }
             return projectRepository.save(project);
         }catch (Exception e){
             throw new ProjectIdException("Project ID '" + project.getProjectIdentifier() + "'");
