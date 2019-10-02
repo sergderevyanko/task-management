@@ -2,7 +2,9 @@ package org.atomspace.taskmanager.services;
 
 import org.atomspace.taskmanager.domain.Backlog;
 import org.atomspace.taskmanager.domain.ProjectTask;
+import org.atomspace.taskmanager.exceptions.ProjectNotFoundException;
 import org.atomspace.taskmanager.repositories.BacklogRepository;
+import org.atomspace.taskmanager.repositories.ProjectRepository;
 import org.atomspace.taskmanager.repositories.ProjectTaskRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,9 @@ public class ProjectTaskService {
     private BacklogRepository backlogRepository;
 
     @Autowired
+    private ProjectRepository projectRepository;
+
+    @Autowired
     private ProjectTaskRepository projectTaskRepository;
 
     public ProjectTask addProjectTask(String projectIdentifier, ProjectTask projectTask){
@@ -24,6 +29,11 @@ public class ProjectTaskService {
         // 3. we want our project sequence to be like this: IDPRO-1, IDPRO-2 ... IDPRO-100
         // 4. Update BL SEQUENCE
         Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
+
+        if(backlog == null){
+            throw new ProjectNotFoundException("Project " + projectIdentifier + " not found");
+        }
+
         projectTask.setBacklog(backlog);
         Integer backlogSequence = backlog.getPTSequence();
         backlog.setPTSequence(++backlogSequence);
@@ -46,6 +56,9 @@ public class ProjectTaskService {
     }
 
     public List<ProjectTask> findBacklogById(String projectIdentifier) {
+        if(projectRepository.findByProjectIdentifier(projectIdentifier) == null ){
+            throw new ProjectNotFoundException("Project " + projectIdentifier + " not found");
+        }
         return projectTaskRepository.findByProjectIdentifierOrderByPriority(projectIdentifier);
     }
 }
