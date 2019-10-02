@@ -17,6 +17,7 @@ public class ProjectTask {
     @NotBlank(message = "Please include a project summary")
     private String summary;
     private String acceptanceCriteria;
+    private String status;
     private Integer priority;
     private Date dueDate;
 
@@ -107,6 +108,22 @@ public class ProjectTask {
         this.updatedAt = updatedAt;
     }
 
+    public Backlog getBacklog() {
+        return backlog;
+    }
+
+    public void setBacklog(Backlog backlog) {
+        this.backlog = backlog;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
     @PrePersist
     protected void onCreate(){
         this.createdAt = new Date();
@@ -117,14 +134,6 @@ public class ProjectTask {
         this.updatedAt = new Date();
     }
 
-    public Backlog getBacklog() {
-        return backlog;
-    }
-
-    public void setBacklog(Backlog backlog) {
-        this.backlog = backlog;
-    }
-
     @Override
     public String toString() {
         return "ProjectTask{" +
@@ -132,8 +141,10 @@ public class ProjectTask {
                 ", projectSequence='" + projectSequence + '\'' +
                 ", summary='" + summary + '\'' +
                 ", acceptanceCriteria='" + acceptanceCriteria + '\'' +
+                ", status='" + status + '\'' +
                 ", priority=" + priority +
                 ", dueDate=" + dueDate +
+                ", backlog=" + backlog.getId() +
                 ", projectIdentifier='" + projectIdentifier + '\'' +
                 ", createdAt=" + createdAt +
                 ", updatedAt=" + updatedAt +
