@@ -81,12 +81,18 @@ public class ProjectTaskService {
     }
 
     public ProjectTask updateProjectTaskBySequence(ProjectTask updatedTask, String backlogId, String projectSequence){
-        ProjectTask projectTask = projectTaskRepository.findProjectTaskByProjectSequence(projectSequence);
-        if(projectTask == null){
-            throw new ProjectNotFoundException("Project Task " + projectSequence + " not found");
-        }
+
+        ProjectTask projectTask = findPTByProjectSequence(backlogId, projectSequence);
+        //really? what's not safe
+        projectTask = updatedTask;
         return projectTaskRepository.save(projectTask);
     }
+
+    public void deleteProjectTaskBySequence(String backlogId, String projectSequence){
+        ProjectTask projectTask = findPTByProjectSequence(backlogId, projectSequence);
+        projectTaskRepository.delete(projectTask);
+    }
+
 
     //TODO: Think about more generic approach
     private static void checkNotNullBacklog(Backlog backlog, String projectIdentifier){

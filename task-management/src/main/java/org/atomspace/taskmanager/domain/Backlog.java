@@ -16,7 +16,7 @@ public class Backlog {
     private String projectIdentifier;
 
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.EAGER,  cascade = CascadeType.REFRESH, orphanRemoval = true)
     @JoinColumn(name = "project_id", nullable = false)
     @JsonIgnore
     private Project project;
