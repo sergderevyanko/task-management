@@ -30,13 +30,11 @@ public class ProjectTaskService {
         // 4. Update BL SEQUENCE
         Backlog backlog = backlogRepository.findByProjectIdentifier(projectIdentifier);
 
-        if(backlog == null){
-            throw new ProjectNotFoundException("Project " + projectIdentifier + " not found");
-        }
+        checkNotNullBacklog(backlog, projectIdentifier);
 
         projectTask.setBacklog(backlog);
-        Integer backlogSequence = backlog.getPTSequence();
-        backlog.setPTSequence(++backlogSequence);
+        Integer backlogSequence = backlog.getPTSequence() + 1;
+        backlog.setPTSequence(backlogSequence);
 
         projectTask.setProjectSequence(backlog.getProjectIdentifier() + "-" + backlogSequence);
         projectTask.setProjectIdentifier(backlog.getProjectIdentifier());
@@ -51,7 +49,7 @@ public class ProjectTaskService {
             //replace with Enum
             projectTask.setStatus("TODO");
         }
-
+        backlogRepository.save(backlog);
         return projectTaskRepository.save(projectTask);
     }
 
@@ -60,5 +58,32 @@ public class ProjectTaskService {
             throw new ProjectNotFoundException("Project " + projectIdentifier + " not found");
         }
         return projectTaskRepository.findByProjectIdentifierOrderByPriority(projectIdentifier);
+    }
+
+    public ProjectTask findPTByProjectSequence(String backlogId, String projectSequence){
+
+        //make sure we are searching on an existing project
+        Backlog backlog = backlogRepository.findByProjectIdentifier(backlogId);
+        checkNotNullBacklog(backlog, backlogId);
+        //make sure out task exist
+        ProjectTask projectTask = projectTaskRepository.findProjectTaskByProjectSequence(projectSequence);
+        if(projectTask == null){
+            throw new ProjectNotFoundException("Project Task " + projectSequence + " not found");
+        }
+
+        //make sure that the backlog/project id in the path corresponds to the right project
+        //TODO: Think of making this better
+        if(!projectTask.getProjectIdentifier().equals(backlogId)){
+            throw new ProjectNotFoundException("Project Task " + projectSequence + " does not exist in project " +
+                    backlogId);
+        }
+        return projectTask;
+    }
+
+    //TODO: Think about more generic approach
+    private static void checkNotNullBacklog(Backlog backlog, String projectIdentifier){
+        if(backlog == null){
+            throw new ProjectNotFoundException("Project " + projectIdentifier + " not found");
+        }
     }
 }
