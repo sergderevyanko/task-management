@@ -80,6 +80,14 @@ public class ProjectTaskService {
         return projectTask;
     }
 
+    public ProjectTask updateProjectTaskBySequence(ProjectTask updatedTask, String backlogId, String projectSequence){
+        ProjectTask projectTask = projectTaskRepository.findProjectTaskByProjectSequence(projectSequence);
+        if(projectTask == null){
+            throw new ProjectNotFoundException("Project Task " + projectSequence + " not found");
+        }
+        return projectTaskRepository.save(projectTask);
+    }
+
     //TODO: Think about more generic approach
     private static void checkNotNullBacklog(Backlog backlog, String projectIdentifier){
         if(backlog == null){
