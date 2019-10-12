@@ -27,7 +27,8 @@ export const getBacklog  = (project_code)=> async dispatch =>{
         });
     } catch (err) {
         dispatch({
-            //TODO: Implement Error Handling
+            type: GET_ERRORS,
+            payload: err.response.data
         });
     }
 }
