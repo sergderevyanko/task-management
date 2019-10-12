@@ -4,9 +4,15 @@ import ProjectTask from "./ProjectTasks/ProjectTask";
 class Backlog extends Component {
     render() {
         const {projectTasks} = this.props;
-        const tasks = projectTasks.map(projectTask => (
-            <ProjectTask key={projectTask.id} projectTask={projectTask} />
-        ));
+        let taskByStatus = {};
+        projectTasks.map(projectTask => {
+            if(!taskByStatus[projectTask.status]){
+                taskByStatus[projectTask.status] = [];
+            }
+            taskByStatus[projectTask.status].push(<ProjectTask key={projectTask.id} projectTask={projectTask} />);
+        });
+
+
         return (
             <div className="container">
                 <div className="row">
@@ -16,7 +22,7 @@ class Backlog extends Component {
                                 <h3>TO DO</h3>
                             </div>
                         </div>
-                        {tasks}
+                        {taskByStatus["TO_DO"]}
                     </div>
                     <div className="col-md-4">
                         <div className="card text-center mb-2">
@@ -24,7 +30,7 @@ class Backlog extends Component {
                                 <h3>In Progress</h3>
                             </div>
                         </div>
-
+                        {taskByStatus["IN_PROGRESS"]}
 
                     </div>
                     <div className="col-md-4">
@@ -33,8 +39,7 @@ class Backlog extends Component {
                                 <h3>Done</h3>
                             </div>
                         </div>
-
-
+                        {taskByStatus["DONE"]}
                     </div>
                 </div>
             </div>
