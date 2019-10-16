@@ -56,7 +56,6 @@ class UpdateProjectTask extends Component {
     }
 
     render() {
-        const {projectTaskId} = this.props.match.params;
         const {errors} = this.state;
 
         return (

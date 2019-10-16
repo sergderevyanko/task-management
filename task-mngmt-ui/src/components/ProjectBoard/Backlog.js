@@ -9,7 +9,7 @@ class Backlog extends Component {
             if(!taskByStatus[projectTask.status]){
                 taskByStatus[projectTask.status] = [];
             }
-            taskByStatus[projectTask.status].push(<ProjectTask key={projectTask.id} projectTask={projectTask} />);
+            return taskByStatus[projectTask.status].push(<ProjectTask key={projectTask.id} projectTask={projectTask} />);
         });
 
 

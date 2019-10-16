@@ -1,5 +1,5 @@
 import axios from "axios";
-import {GET_BACKLOG, GET_ERRORS, GET_PROJECT_TASK} from "./types";
+import {DELETE_PROJECT_TASK, GET_BACKLOG, GET_ERRORS, GET_PROJECT_TASK} from "./types";
 
 
 export const addProjectTask  = (project_code, project_task, history)=> async dispatch =>{
@@ -62,3 +62,18 @@ export const updateProjectTask  = (projectCode, projectTaskId, projectTask, hist
         });
     }
 }
+
+export const deleteProjectTask = (projectCode, projectTaskId) => async dispatch => {
+    if(window.confirm(`Are you sure? This will delete the Project Task: ${projectTaskId}`)){
+        try {
+            await axios.delete(`/api/backlog/${projectCode}/${projectTaskId}`)
+            dispatch({
+                type: DELETE_PROJECT_TASK,
+                payload: projectTaskId
+            });
+        } catch (err) {
+            //TODO: implement error handling
+            history.push('/dashboard');
+        }
+    }
+};
