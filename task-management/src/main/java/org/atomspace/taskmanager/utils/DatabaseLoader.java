@@ -8,12 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class DatabaseLoader implements CommandLineRunner {
     private final ProjectService projectService;
+    private final static Map<Integer, String> statusMap =  new HashMap<>();
+    private Random random = new Random();
+
+    static {
+        statusMap.put(1, "TO_DO");
+        statusMap.put(2, "IN_PROGRESS");
+        statusMap.put(3, "DONE");
+    }
 
     @Autowired
     private ProjectTaskService projectTaskService;
@@ -36,7 +43,7 @@ public class DatabaseLoader implements CommandLineRunner {
                 "that help people learn how to build a complex systems with JAVA techological stack"));
         for(Project project: projects){
             this.projectService.saveOrUpdateProject(project);
-            for(int i=0; i<4; i++){
+            for(int i=0; i<6; i++){
                 generateProjectTask(project.getProjectIdentifier());
             }
         }
@@ -45,6 +52,8 @@ public class DatabaseLoader implements CommandLineRunner {
     private void generateProjectTask(String projectIdentifier){
         ProjectTask taskToAdd = new ProjectTask();
         taskToAdd.setSummary("A Task for project: " + projectIdentifier);
+        taskToAdd.setPriority(random.nextInt(3) +1);
+        taskToAdd.setStatus(statusMap.get(random.nextInt(3) +1));
         projectTaskService.addProjectTask(projectIdentifier, taskToAdd);
     }
 }

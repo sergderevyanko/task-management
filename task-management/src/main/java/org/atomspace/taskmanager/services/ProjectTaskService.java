@@ -47,7 +47,7 @@ public class ProjectTaskService {
         //INITIAL status when priority is null
         if(projectTask.getStatus() == null || projectTask.getStatus().isEmpty()){
             //replace with Enum
-            projectTask.setStatus("TODO");
+            projectTask.setStatus("TO_DO");
         }
         backlogRepository.save(backlog);
         return projectTaskRepository.save(projectTask);
@@ -83,7 +83,7 @@ public class ProjectTaskService {
     public ProjectTask updateProjectTaskBySequence(ProjectTask updatedTask, String backlogId, String projectSequence){
 
         ProjectTask projectTask = findPTByProjectSequence(backlogId, projectSequence);
-        //really? what's not safe
+        //really? that's not safe
         projectTask = updatedTask;
         return projectTaskRepository.save(projectTask);
     }
