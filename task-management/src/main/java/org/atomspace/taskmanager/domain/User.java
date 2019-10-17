@@ -1,6 +1,7 @@
 package org.atomspace.taskmanager.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -97,18 +98,22 @@ public class User implements UserDetails {
         this.fullName = fullName;
     }
 
+    @JsonIgnore
     public String getPassword() {
         return password;
     }
 
+    @JsonProperty
     public void setPassword(String password) {
         this.password = password;
     }
 
+    @JsonIgnore
     public String getConfirmPassword() {
         return confirmPassword;
     }
 
+    @JsonProperty
     public void setConfirmPassword(String confirmPassword) {
         this.confirmPassword = confirmPassword;
     }

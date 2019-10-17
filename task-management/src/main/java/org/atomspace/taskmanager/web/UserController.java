@@ -3,6 +3,7 @@ package org.atomspace.taskmanager.web;
 import org.atomspace.taskmanager.domain.User;
 import org.atomspace.taskmanager.services.MapValidationErrorService;
 import org.atomspace.taskmanager.services.UserService;
+import org.atomspace.taskmanager.validator.UserValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,9 +25,12 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @Autowired
+    private UserValidator userValidator;
+
     @PostMapping("/register")
     public ResponseEntity<?> registerUser(@Valid @RequestBody User user, BindingResult result){
-
+        userValidator.validate(user, result);
         ResponseEntity<?> errorMap =  mapValidationErrorService.mapValidation(result);
         if(errorMap != null) return errorMap;
 

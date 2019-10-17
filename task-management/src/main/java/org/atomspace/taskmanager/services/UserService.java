@@ -1,6 +1,7 @@
 package org.atomspace.taskmanager.services;
 
 import org.atomspace.taskmanager.domain.User;
+import org.atomspace.taskmanager.exceptions.UsernameAlreadyExistsException;
 import org.atomspace.taskmanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -16,10 +17,18 @@ public class UserService {
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public User saveUser(User newUser){
-        newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
-        // Username has to be unique
-        // Make sure that password and confirmPassword match
-        // Don't persist or show password or/and confirm password
-        return userRepository.save(newUser);
+        try {
+            newUser.setPassword(bCryptPasswordEncoder.encode(newUser.getPassword()));
+            // according to course that magic causes an SQL exception, but AFAIU it is not required
+            // newUser.setUsername(newUser.getUsername());
+
+            // Make sure that password and confirmPassword match
+            // Don't persist or show password or/and confirm password
+            return userRepository.save(newUser);
+        }
+        catch (Exception exception){
+            throw new UsernameAlreadyExistsException("Username '" + newUser.getUsername() + "' already exists");
+        }
     }
+
 }
