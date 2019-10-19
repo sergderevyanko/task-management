@@ -1,7 +1,6 @@
 package org.atomspace.taskmanager.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.atomspace.taskmanager.domain.User;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
@@ -36,5 +35,31 @@ public class JwtTokenProvider {
                 .setExpiration(expireDate)
                 .signWith(SignatureAlgorithm.HS512, SECRET)
                 .compact();
+    }
+
+    //Validate the token
+    public boolean validateToken(String token){
+        try{
+            Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token);
+            return true;
+        }catch (SignatureException ex){
+            System.out.println("SignatureException");
+        }catch (MalformedJwtException ex){
+            System.out.println("MalformedJwtException");
+        }catch (ExpiredJwtException ex){
+            System.out.println("ExpiredJwtException");
+        }catch (UnsupportedJwtException ex){
+            System.out.println("UnsupportedJwtException");
+        }catch (IllegalArgumentException ex){
+            System.out.println("IllegalArgumentException");
+        }
+        return false;
+    }
+
+    // Get user id from token
+    public Long getUserIdFromJWT(String token){
+        Claims claims = Jwts.parser().setSigningKey(SECRET).parseClaimsJws(token).getBody();
+        Long id = Long.parseLong((String)claims.get("id"));
+        return id;
     }
 }
