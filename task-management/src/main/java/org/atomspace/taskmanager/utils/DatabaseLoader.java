@@ -2,8 +2,10 @@ package org.atomspace.taskmanager.utils;
 
 import org.atomspace.taskmanager.domain.Project;
 import org.atomspace.taskmanager.domain.ProjectTask;
+import org.atomspace.taskmanager.domain.User;
 import org.atomspace.taskmanager.services.ProjectService;
 import org.atomspace.taskmanager.services.ProjectTaskService;
+import org.atomspace.taskmanager.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -26,6 +28,9 @@ public class DatabaseLoader implements CommandLineRunner {
     private ProjectTaskService projectTaskService;
 
     @Autowired
+    private UserService userService;
+
+    @Autowired
     public DatabaseLoader(ProjectService projectService) {
         this.projectService = projectService;
     }
@@ -41,12 +46,21 @@ public class DatabaseLoader implements CommandLineRunner {
                 "aimed on getting hands-on experience with React and other tools"));
         projects.add(new Project("Java Guru", "ASJG", "A project " +
                 "that help people learn how to build a complex systems with JAVA techological stack"));
+        User user = createUser();
         for(Project project: projects){
-            this.projectService.saveOrUpdateProject(project);
+            this.projectService.saveOrUpdateProject(project, user.getUsername());
             for(int i=0; i<6; i++){
                 generateProjectTask(project.getProjectIdentifier());
             }
         }
+    }
+
+    private User createUser(){
+        User user = new User();
+        user.setUsername("atomuser@gmail.com");
+        user.setPassword("atompassword");
+        user.setFullName("Atom Space Resident");
+        return userService.saveUser(user);
     }
 
     private void generateProjectTask(String projectIdentifier){

@@ -2,9 +2,11 @@ package org.atomspace.taskmanager.services;
 
 import org.atomspace.taskmanager.domain.Backlog;
 import org.atomspace.taskmanager.domain.Project;
+import org.atomspace.taskmanager.domain.User;
 import org.atomspace.taskmanager.exceptions.ProjectIdException;
 import org.atomspace.taskmanager.repositories.BacklogRepository;
 import org.atomspace.taskmanager.repositories.ProjectRepository;
+import org.atomspace.taskmanager.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,10 +21,15 @@ public class ProjectService {
 
     @Autowired
     private BacklogRepository backlogRepository;
+    @Autowired
+    private UserRepository userRepository;
 
-    public Project saveOrUpdateProject(Project project){
+    public Project saveOrUpdateProject(Project project, String username){
 
         try{
+            User user = userRepository.findByUsername(username);
+            project.setUser(user);
+            project.setProjectLeader(username);
             project.setProjectIdentifier(project.getProjectIdentifier().toUpperCase());
             if(project.getId() == null){
                 Backlog backlog = new Backlog();

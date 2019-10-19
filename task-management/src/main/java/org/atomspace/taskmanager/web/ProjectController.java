@@ -10,6 +10,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.security.Principal;
 
 /**
  * Created by sergey.derevyanko on 30.07.19.
@@ -25,14 +26,14 @@ public class ProjectController {
     private MapValidationErrorService mapValidationErrorService;
     @PostMapping("")
     public ResponseEntity<?> createNewProject(@Valid @RequestBody Project project,
-                                                    BindingResult bindingResult){
+                                              BindingResult bindingResult, Principal principal){
 
         ResponseEntity<?> errorMap = mapValidationErrorService.mapValidation(bindingResult);
         if(errorMap != null ){
             return errorMap;
         }
 
-        Project createdProject = projectService.saveOrUpdateProject(project);
+        Project createdProject = projectService.saveOrUpdateProject(project, principal.getName());
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
