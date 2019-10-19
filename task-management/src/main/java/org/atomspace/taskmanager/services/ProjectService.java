@@ -4,6 +4,7 @@ import org.atomspace.taskmanager.domain.Backlog;
 import org.atomspace.taskmanager.domain.Project;
 import org.atomspace.taskmanager.domain.User;
 import org.atomspace.taskmanager.exceptions.ProjectIdException;
+import org.atomspace.taskmanager.exceptions.ProjectNotFoundException;
 import org.atomspace.taskmanager.repositories.BacklogRepository;
 import org.atomspace.taskmanager.repositories.ProjectRepository;
 import org.atomspace.taskmanager.repositories.UserRepository;
@@ -46,25 +47,23 @@ public class ProjectService {
         }
     }
 
-    public Project findProjectByIdentifier(String projectId){
+    public Project findProjectByIdentifier(String projectId, String username){
         Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
         if (project == null){
             throw new ProjectIdException("Project ID '" + projectId + "' does not exist");
         }
+        if(!project.getProjectLeader().equals(username)){
+            throw new ProjectNotFoundException("Project not found in your account");
+        }
         return project;
     }
 
-    public Iterable<Project> findAllProjects(){
-        return projectRepository.findAll();
+    public Iterable<Project> findAllProjects(String username){
+        return projectRepository.findAllByProjectLeader(username);
     }
 
-    public void deleteProjectByIdentifier(String projectId){
-        Project project = projectRepository.findByProjectIdentifier(projectId.toUpperCase());
-        if(project == null){
-            throw new ProjectIdException("Cannot delete Project with ID '" + projectId + "'. " +
-                    "Project does not exist");
-        }
-
+    public void deleteProjectByIdentifier(String projectId, String username){
+        Project project = findProjectByIdentifier(projectId.toUpperCase(), username);
         projectRepository.delete(project);
     }
 

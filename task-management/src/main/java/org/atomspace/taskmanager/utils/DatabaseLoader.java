@@ -46,8 +46,16 @@ public class DatabaseLoader implements CommandLineRunner {
                 "aimed on getting hands-on experience with React and other tools"));
         projects.add(new Project("Java Guru", "ASJG", "A project " +
                 "that help people learn how to build a complex systems with JAVA techological stack"));
-        User user = createUser();
+        User user1 = createUser("atomuser@gmail.com");
+        User user2 = createUser("testuser@gmail.com");
+        User user = user1;
         for(Project project: projects){
+            if(user == user1){
+                user = user2;
+            }
+            else{
+                user = user1;
+            }
             this.projectService.saveOrUpdateProject(project, user.getUsername());
             for(int i=0; i<6; i++){
                 generateProjectTask(project.getProjectIdentifier());
@@ -55,9 +63,9 @@ public class DatabaseLoader implements CommandLineRunner {
         }
     }
 
-    private User createUser(){
+    private User createUser(String username){
         User user = new User();
-        user.setUsername("atomuser@gmail.com");
+        user.setUsername(username);
         user.setPassword("atompassword");
         user.setFullName("Atom Space Resident");
         return userService.saveUser(user);
