@@ -58,7 +58,7 @@ public class DatabaseLoader implements CommandLineRunner {
             }
             this.projectService.saveOrUpdateProject(project, user.getUsername());
             for(int i=0; i<6; i++){
-                generateProjectTask(project.getProjectIdentifier());
+                generateProjectTask(project.getProjectIdentifier(), user.getUsername());
             }
         }
     }
@@ -71,11 +71,11 @@ public class DatabaseLoader implements CommandLineRunner {
         return userService.saveUser(user);
     }
 
-    private void generateProjectTask(String projectIdentifier){
+    private void generateProjectTask(String projectIdentifier, String username){
         ProjectTask taskToAdd = new ProjectTask();
         taskToAdd.setSummary("A Task for project: " + projectIdentifier);
         taskToAdd.setPriority(random.nextInt(3) +1);
         taskToAdd.setStatus(statusMap.get(random.nextInt(3) +1));
-        projectTaskService.addProjectTask(projectIdentifier, taskToAdd);
+        projectTaskService.addProjectTask(projectIdentifier, taskToAdd, username);
     }
 }
