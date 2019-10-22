@@ -6,7 +6,7 @@ import {connect} from "react-redux";
 
 class SignUp extends Component {
 
-    constructor(){
+    constructor() {
         super();
         this.state = {
             username: "",
@@ -19,13 +19,19 @@ class SignUp extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    onChange(e){
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.errors) {
+            this.setState({errors: nextProps.errors});
+        }
+    }
+
+    onChange(e) {
         this.setState({
             [e.target.name]: e.target.value
         })
     }
 
-    onSubmit(e){
+    onSubmit(e) {
         e.preventDefault();
         const newUser = {
             username: this.state.username,
@@ -36,8 +42,8 @@ class SignUp extends Component {
         this.props.createNewUser(newUser, this.props.history);
     }
 
-
     render() {
+        const {errors} = this.state;
         return (
             <div className="register">
                 <div className="container">
@@ -47,31 +53,54 @@ class SignUp extends Component {
                             <p className="lead text-center">Create your Account</p>
                             <form action="" onSubmit={this.onSubmit}>
                                 <div className="form-group">
-                                    <input type="text" className="form-control form-control-lg" placeholder="Full Name"
+                                    <input type="text" className={classnames("form-control form-control-lg", {
+                                        "is-invalid": errors.fullName
+                                    })}
+                                           placeholder="Full Name"
                                            name="fullName"
                                            value={this.state.fullName}
                                            onChange={this.onChange}
                                            required/>
                                 </div>
                                 <div className="form-group">
-                                    <input type="email" className="form-control form-control-lg"
+                                    <input type="email" className={classnames("form-control form-control-lg", {
+                                        "is-invalid": errors.username
+                                    })}
                                            placeholder="Username (Email)" name="username"
                                            value={this.state.username}
-                                    onChange={this.onChange}/>
-
+                                           onChange={this.onChange}/>
+                                    {errors.username && (
+                                        <div className="invalid-feedback">
+                                            {errors.username}
+                                        </div>)
+                                    }
                                 </div>
                                 <div className="form-group">
-                                    <input type="password" className="form-control form-control-lg"
+                                    <input type="password" className={classnames("form-control form-control-lg", {
+                                        "is-invalid": errors.password
+                                    })}
                                            placeholder="Password" name="password"
                                            value={this.state.password}
                                            onChange={this.onChange}
                                     />
+                                    {errors.password && (
+                                        <div className="invalid-feedback">
+                                            {errors.password}
+                                        </div>)
+                                    }
                                 </div>
                                 <div className="form-group">
-                                    <input type="password" className="form-control form-control-lg"
+                                    <input type="password" className={classnames("form-control form-control-lg", {
+                                        "is-invalid": errors.confirmPassword
+                                    })}
                                            placeholder="Confirm Password"
                                            name="confirmPassword" value={this.state.confirmPassword}
                                            onChange={this.onChange}/>
+                                    {errors.confirmPassword && (
+                                        <div className="invalid-feedback">
+                                            {errors.confirmPassword}
+                                        </div>)
+                                    }
                                 </div>
                                 <input type="submit" className="btn btn-info btn-block mt-4"/>
                             </form>
@@ -88,8 +117,8 @@ SignUp.propTypes = {
     errors: PropTypes.object.isRequired
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = state => ({
     errors: state.errors
-}
+})
 
 export default connect(mapStateToProps, {createNewUser})(SignUp);
