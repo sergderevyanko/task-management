@@ -26,12 +26,15 @@ class Login extends Component {
         e.preventDefault();
         const LogingRequest = {
             username: this.state.username,
-            password: this.state.password,
+            password: this.state.password
         }
         this.props.login(LogingRequest);
     }
 
     componentWillReceiveProps(nextProps, nextContext) {
+        if (nextProps.security.tokenIsValid) {
+            this.props.history.push("/dashboard");
+        }
         if (nextProps.errors) {
             this.setState({errors: nextProps.errors});
         }
@@ -85,7 +88,8 @@ class Login extends Component {
 
 Login.propTypes = {
     login: PropTypes.func.isRequired,
-    errors: PropTypes.object.isRequired
+    errors: PropTypes.object.isRequired,
+    security: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
