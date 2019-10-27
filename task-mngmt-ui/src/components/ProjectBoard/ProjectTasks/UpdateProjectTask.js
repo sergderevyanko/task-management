@@ -86,7 +86,7 @@ class UpdateProjectTask extends Component {
                                 <div className="form-group">
                                     <textarea className="form-control form-control-lg" placeholder="Acceptance Criteria"
                                               name="acceptanceCriteria"
-                                              value={this.state.acceptanceCriteria}
+                                              value={this.state.acceptanceCriteria || ""}
                                               onChange={this.onChange}>
                                     </textarea>
                                 </div>
