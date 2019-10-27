@@ -19,6 +19,12 @@ class SignUp extends Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
+    componentDidMount() {
+        if(this.props.security.tokenIsValid){
+            this.props.history.push("/dashboard")
+        }
+    }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.errors) {
             this.setState({errors: nextProps.errors});
@@ -114,11 +120,13 @@ class SignUp extends Component {
 
 SignUp.propTypes = {
     createNewUser: PropTypes.func.isRequired,
-    errors: PropTypes.object.isRequired
+    errors: PropTypes.object.isRequired,
+    security: PropTypes.object.isRequired
 }
 
 const mapStateToProps = state => ({
-    errors: state.errors
+    errors: state.errors,
+    security: state.security
 })
 
 export default connect(mapStateToProps, {createNewUser})(SignUp);
